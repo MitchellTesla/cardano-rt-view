@@ -20,6 +20,7 @@ import qualified Cardano.RTView.GUI.JS.Charts as Chart
 import           Cardano.RTView.GUI.Elements (HTMLClass (..), HTMLId (..),
                                               NodesStateElements, TmpElements,
                                               hideIt, showIt, (##), (#.))
+import           Cardano.RTView.GUI.Markup.Notifications (mkNotifications)
 import           Cardano.RTView.GUI.Markup.OwnInfo (mkOwnInfo)
 import           Cardano.RTView.GUI.Markup.Pane (mkNodesPanes)
 import           Cardano.RTView.NodeState.Types
@@ -114,6 +115,13 @@ topNavigation window acceptors config params nodesSelector = do
   void $ UI.onEvent (UI.click rtViewInfoButton) $ \_ ->
     element rtViewInfo # showIt
 
+  rtViewNotificationsButton <- UI.img #. [NotificationsIcon]
+                                      # set UI.src "/static/images/bell.svg"
+                                      # set UI.title__ "RTView notifications"
+  rtViewNotifications <- mkNotifications config params rtViewNotificationsButton
+  void $ UI.onEvent (UI.click rtViewNotificationsButton) $ \_ ->
+    element rtViewNotifications # showIt
+
   nodesColumns1 <- UI.anchor #. [W3BarItem, W3Button, W3Mobile]            #+ [UI.string "1 node"]
   nodesColumns2 <- UI.anchor #. [W3BarItem, W3Button, W3Mobile, ActiveTab] #+ [UI.string "2 nodes"]
   nodesColumns3 <- UI.anchor #. [W3BarItem, W3Button, W3Mobile]            #+ [UI.string "3 nodes"]
@@ -149,6 +157,10 @@ topNavigation window acceptors config params nodesSelector = do
     , UI.span #. [W3BarItem, W3Mobile] #+
         [ element rtViewInfoButton
         , element rtViewInfo
+        ]
+    , UI.span #. [W3BarItem, W3Mobile] #+
+        [ element rtViewNotificationsButton
+        , element rtViewNotifications
         ]
     , UI.span #. [W3Right, W3HideMedium, W3HideSmall, ServiceName] #+
         [ string "Cardano Node Real-time View"
